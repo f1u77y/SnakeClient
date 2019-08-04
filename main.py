@@ -58,6 +58,7 @@ def curses_main(scr, args):
         logging.info("Connection established")
         while True:
             direction = scr.getch()
+            curses.flushinp()
             try:
                 data = conn.read_until(b'\n', timeout=0.5).decode()
             except nclib.NetcatTimeout:
