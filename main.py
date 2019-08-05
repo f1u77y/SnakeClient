@@ -23,7 +23,7 @@ DEFAULT_PORT = 34131
 
 class CommandSenderThread(threading.Thread):
     def __init__(self, scr, conn):
-        super().__init__()
+        super(CommandSenderThread, self).__init__()
         self._scr = scr
         self._conn = conn
 
@@ -40,13 +40,13 @@ class CommandSenderThread(threading.Thread):
 
 class Connection(object):
     def __init__(self, host, port, recv_filename, send_filename):
-        self.recv_f = open(recv_filename, "ba")
-        self.send_f = open(send_filename, "ba")
+        # self.recv_f = open(recv_filename, "ba")
+        # self.send_f = open(send_filename, "ba")
         self.conn = nclib.netcat.Netcat(
             connect=(host, port),
             verbose=False,  # Don't set it
-            log_recv=self.recv_f,
-            log_send=self.send_f,
+            # log_recv=self.recv_f,
+            # log_send=self.send_f,
             raise_timeout=True,
         )
         self.conn.echo_hex = True
@@ -56,8 +56,8 @@ class Connection(object):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.conn.close()
-        self.recv_f.close()
-        self.send_f.close()
+        # self.recv_f.close()
+        # self.send_f.close()
 
 
 def set_logger():
