@@ -24,7 +24,7 @@ class SocketWrapper(socket.socket):
         while len(self._buff) <= max_buf_size and seq not in self._buff:
             data = self.recv(self.RECV_SIZE)
             if not data:
-                raise ConnectionLostException("Connection lost")
+                raise ConnectionLostException
             self._buff += data
         if len(self._buff) > max_buf_size:
             raise SocketWrapperException("Buff size is too big")
@@ -33,3 +33,14 @@ class SocketWrapper(socket.socket):
         self._buff = self._buff[found_pos + len(seq):]
         return res
 
+    def accept(self):
+        fd, addr = self._accept()
+        # If our type has the SOCK_NONBLOCK flag, we shouldn't pass it onto the
+        # new socket. We do not currently allow passing SOCK_NONBLOCK to
+        # accept4, so the returned socket is always blocking.
+        type = self.type & ~globals().get("SOCK_NONBLOCK", 0)
+        sock = SocketWrapper(self.family, type, self.proto, fileno=fd)
+        # Issue #7995: if no default timeout is set and the listening
+        # socket had a (non-zero) timeout, force the new socket in blocking
+        # mode to override platform-specific socket flags inheritance.
+        return sock, addr

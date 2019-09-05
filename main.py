@@ -70,13 +70,19 @@ def curses_main(scr, args):
                 else:
                     logging.info("server sent %s", data)
                     unpacked_data = json.loads(data)
-                    raw_map = unpacked_data["raw_map"]
-                    width = unpacked_data["width"]
-                    height = unpacked_data["height"]
-                    field = [raw_map[i * width: (i + 1) * width] for i in range(height)]
-                    for y in range(height):
-                        scr.addstr(y, 0, field[y])
+                    type = unpacked_data["type"]
+                    if type == "tick":
+                        raw_map = unpacked_data["raw_map"]
+                        width = unpacked_data["width"]
+                        height = unpacked_data["height"]
+                        field = [raw_map[i * width: (i + 1) * width] for i in range(height)]
+                        for y in range(height):
+                            scr.addstr(y, 0, field[y])
+                    elif type == "end_game":
+                        scr.clear()
+                        scr.addstr(0, 0, "GAME OVER")
                     scr.refresh()
+
     except Exception:
         if command_thread:
             command_thread.join()
