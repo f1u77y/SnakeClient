@@ -24,7 +24,7 @@ class SocketWrapper(socket.socket):
         while len(self._buff) <= max_buf_size and seq not in self._buff:
             data = self.recv(self.RECV_SIZE)
             if not data:
-                raise ConnectionLostException
+                raise ConnectionLostException("Connection lost")
             self._buff += data
         if len(self._buff) > max_buf_size:
             raise SocketWrapperException("Buff size is too big")
