@@ -77,7 +77,10 @@ def curses_main(scr, args):
                         height = unpacked_data["height"]
                         field = [raw_map[i * width: (i + 1) * width] for i in range(height)]
                         for y in range(height):
-                            scr.addstr(y, 0, field[y])
+                            try:
+                                scr.addstr(y, 0, field[y])
+                            except:
+                                pass  # Bogdan, fix it
                     elif type == "end_game":
                         scr.clear()
                         scr.addstr(0, 0, "GAME OVER")
